@@ -70,16 +70,18 @@ io.on('connection', (socket) => {
 		socket.on('createMessage', (message, callback) => {
 
 			var user = users.getUser(socket.id);
-
-			console.log('socket ',socket.id)
-			console.log('user ',user.id)
-
-			if(socket.id===user.id){
-				console.log('its same')
-			}
-
-
+			
 			if (user && isRealString(message.text)) {
+
+				var text = new Text({
+						text: message.text
+					})
+					text.save().then((doc) => {
+						console.log('saved ', doc)
+					}, (e) => {
+						console.log('error ', e)
+					})
+
 				io.to(user.room).emit('newMessage', generateMessage(user.name, message.text))
 			}
 			
