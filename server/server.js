@@ -63,11 +63,7 @@ io.on('connection', (socket) => {
 			socket.join(params.room)
 			users.removeUser(socket.id);
 			users.addUser(socket.id, params.name, params.room)
-			// socket.leave('The Office Fans');
-
-			// io.emit -> io.to('The Office Fans').emit
-			// socket.broadcast.emit -> socket.broadcast.to('The Office Fans').emit
-			// socket.emit
+			
 
 			io.to(params.room).emit('updateUserList', users.getUserList(params.room))
 			//socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
@@ -82,7 +78,7 @@ io.on('connection', (socket) => {
 
 			
 
-			socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined.`));
+			//socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined.`));
 			callback();
 		});
 

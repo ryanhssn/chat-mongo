@@ -4,8 +4,19 @@ const request = require('supertest');
 const {app} = require('./../server');
 const {Text} = require('./../models/text');
 
+const texts = [{
+	text: 'First test text'
+}, {
+	text: 'Second test text'
+}]
+
+
 beforeEach((done) => {
-	Text.remove({}).then(() => done());
+	Text.remove({}).then(() => {
+		return Text.insertMany(texts);
+	}).then(() => {
+		done();
+	})
 })
 
 
@@ -25,7 +36,7 @@ describe('POST /texts', () => {
 				return done(err);
 			}
 
-			Text.find().then((texts) => {
+			Text.find({text}).then((texts) => {
 				expect(texts.length).toBe(1)
 				expect(texts[0].text).toBe(text);
 				done();
@@ -47,7 +58,7 @@ describe('POST /texts', () => {
 			})
 
 			Text.find().then((texts) => {
-				expect(texts.length).toBe(0);
+				expect(texts.length).toBe(2);
 				done();
 			}).catch((e) => {
 				done(e);
@@ -55,4 +66,16 @@ describe('POST /texts', () => {
 
 	})	
 
+})
+
+describe('GET /texts', () => {
+	it('should get all the texts', (done) => {
+		request(app)
+			.get('/texts')
+			.expect(200)
+			.expect((res) => {
+				expect(res.body.texts.length).toBe(2);
+			})
+			.end(done);
+	})
 })
