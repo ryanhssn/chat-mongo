@@ -40,6 +40,14 @@ app.post('/texts', (req, res) => {
 
 });
 
+app.get('/texts', (req, res) => {
+	Text.find().then((texts) => {
+		res.send({texts});
+	}, (e) => {
+		res.status(400).send(e);
+	})
+})
+
 app.use(express.static(publicPath));
 
 io.on('connection', (socket) => {
@@ -62,7 +70,18 @@ io.on('connection', (socket) => {
 			// socket.emit
 
 			io.to(params.room).emit('updateUserList', users.getUserList(params.room))
-			socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
+			//socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
+			
+			/*load conversation*/
+			Text.find().then((texts) => {
+					//res.send({texts});
+					socket.emit('loadConversation', texts);
+				}, (e) => {
+					console.log('Error lodading conversation ', e)
+				})
+
+			
+
 			socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined.`));
 			callback();
 		});
@@ -77,9 +96,9 @@ io.on('connection', (socket) => {
 						text: message.text
 					})
 					text.save().then((doc) => {
-						console.log('saved ', doc)
+						//console.log('saved ', doc)
 					}, (e) => {
-						console.log('error ', e)
+						//console.log('error ', e)
 					})
 
 				io.to(user.room).emit('newMessage', generateMessage(user.name, message.text))

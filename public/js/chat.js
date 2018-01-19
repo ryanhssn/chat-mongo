@@ -49,7 +49,28 @@ socket.on('updateUserList', function(users) {
 	jQuery('#users').html(ol);
 })
 
+socket.on('loadConversation', function(message) {
+	console.log('conversation ',message)
+	var formattedTime = moment(message.createdAt).format('h:mm a');
+	var chatScreen = jQuery('#message-template').html();
+	var html;
+	message.forEach(function(text) {
+		html += Mustache.render(chatScreen, {
+			text: text.text,
+			from: 'Bilal Hussain',
+			createdAt: formattedTime
+		})	
+	})
+
+	
+
+	jQuery('#messages').append(html);
+
+	scrollToBottom();
+})
+
 socket.on('newMessage', function(message) {
+	console.log('newMessage ',message)
 	var formattedTime = moment(message.createdAt).format('h:mm a');
 	var template = jQuery('#message-template').html();
 	var html = Mustache.render(template, {
