@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const path = require('path');
 const http = require('http');
 const express = require('express');
@@ -45,6 +46,17 @@ app.get('/texts', (req, res) => {
 		res.send({texts});
 	}, (e) => {
 		res.status(400).send(e);
+	})
+})
+
+app.post('/users', (req, res) => {
+	var body = _.pick(req.body, ['email', 'password']);
+	var user = new User(body);
+
+	user.save().then((user) => {
+		res.send(user);
+	}).catch((e) => {
+		res.status(400).send(e)
 	})
 })
 

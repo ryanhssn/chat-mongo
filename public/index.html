@@ -25,5 +25,61 @@
 		 </div>
 	</form>
 	</div>
+	<div class="centered-form__form">
+	<form name="post-users" id="post-users">
+		 <div class="form-field">
+		 	<h3>Sign up chat!</h3>
+		 </div>
+		 <div class="form-field">
+		 	<label>Email</label>
+		 	<input type="text" name="email" autofocus/>
+		 </div>
+		 <div class="form-field">
+		 	<label>Password</label>
+		 	<input type="text" name="password"/>
+		 </div>
+		 <div class="form-field">
+		 	<button>Join</button>
+		 </div>
+	</form>
+	</div>
+	<script src="/js/libs/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript">
+		var postUsers = $('#post-users');
+		
+		var jsonData = function ( form ) {
+			var arrData = form.serializeArray(),
+			objData = {};
+
+			$.each( arrData, function( index, elem ) {
+				objData[elem.name] = elem.value;
+			})
+
+			return JSON.stringify( objData );
+		};
+
+		postUsers.on('submit', function( e ) {
+			e.preventDefault();
+
+			$.ajax({
+				url: 'http://localhost:3000/users',
+				method: 'POST',
+				data: jsonData( postUsers ),
+				crossDomain: true,
+				contentType: 'application/json',
+				beforeSend: function( xhr ) {
+					xhr.setRequestHeader( 'Authorization', 'Basic username: password');
+				},
+				success: function(data){
+					window.location.href = "/chat.html"
+				},
+				error: function(err){
+					console.log(err)
+				}
+			})
+			
+		})
+	</script>
 </body>
 </html>
+
