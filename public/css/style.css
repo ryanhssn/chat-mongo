@@ -74,6 +74,16 @@ button:disabled {
   margin-bottom: 7px;
 }
 
+.error {
+    color: red;
+  text-align: center;
+  margin-bottom: 40px auto;
+  padding: 6px;
+  margin-top: -16px;
+  font-size: 11px;
+  font-family: monospace;
+}
+
 .form-field input, .form-field select {
   border: 1px solid #e1e1e1;
   padding: 10px;

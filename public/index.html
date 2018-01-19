@@ -8,22 +8,23 @@
 </head>
 <body class="centered-form">
 	<div class="centered-form__form">
-	<form action="/chat.html">
+	<form name="login-users" id="login-users">
 		 <div class="form-field">
 		 	<h3>Join a chat!</h3>
 		 </div>
 		 <div class="form-field">
-		 	<label>Display name</label>
-		 	<input type="text" name="name" autofocus/>
+		 	<label>Email</label>
+		 	<input type="text" name="email" autofocus/>
 		 </div>
 		 <div class="form-field">
-		 	<label>Room name</label>
-		 	<input type="text" name="room"/>
+		 	<label>Password</label>
+		 	<input type="password" name="password"/>
 		 </div>
 		 <div class="form-field">
-		 	<button>Join</button>
+		 	<button>Login</button>
 		 </div>
 	</form>
+
 	</div>
 	<div class="centered-form__form">
 	<form name="post-users" id="post-users">
@@ -42,44 +43,10 @@
 		 	<button>Join</button>
 		 </div>
 	</form>
+	<div class="error-post error"></div>
 	</div>
 	<script src="/js/libs/jquery-3.2.1.min.js"></script>
-	<script type="text/javascript">
-		var postUsers = $('#post-users');
-		
-		var jsonData = function ( form ) {
-			var arrData = form.serializeArray(),
-			objData = {};
-
-			$.each( arrData, function( index, elem ) {
-				objData[elem.name] = elem.value;
-			})
-
-			return JSON.stringify( objData );
-		};
-
-		postUsers.on('submit', function( e ) {
-			e.preventDefault();
-
-			$.ajax({
-				url: 'http://localhost:3000/users',
-				method: 'POST',
-				data: jsonData( postUsers ),
-				crossDomain: true,
-				contentType: 'application/json',
-				beforeSend: function( xhr ) {
-					xhr.setRequestHeader( 'Authorization', 'Basic username: password');
-				},
-				success: function(data){
-					window.location.href = "/chat.html"
-				},
-				error: function(err){
-					console.log(err)
-				}
-			})
-			
-		})
-	</script>
+	<script src="/js/custom.js"></script>
 </body>
 </html>
 
