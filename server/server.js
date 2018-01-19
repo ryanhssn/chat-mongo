@@ -2,6 +2,11 @@ const path = require('path');
 const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io')
+const bodyParser = require('body-parser');
+
+const {mongoose} = require('./db/mongoose');
+const {Text} = require('./models/text');
+const {User} = require('./models/user');
 
 const {generateMessage, generateLocationMessage} = require('./utils/message');
 const {isRealString} = require('./utils/validation');
@@ -16,6 +21,24 @@ var io = socketIO(server);
 var users = new Users();
 
 const port = process.env.PORT || 3000;
+
+
+
+
+app.use(bodyParser.json())
+
+app.post('/texts', (req, res) => {
+	var text = new Text({
+		text: req.body.text
+	})
+
+	text.save().then((doc) => {
+		res.send(doc)
+	}, (e) => {
+		res.status(400).send(e);
+	})
+
+});
 
 app.use(express.static(publicPath));
 
