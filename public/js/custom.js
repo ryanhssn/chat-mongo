@@ -31,6 +31,8 @@ var loginUsers = $('#login-users');
 				},
 				error: function(err){
 					console.log(err)
+					$('.error-login').text(`Error ${err.status} - ${err.statusText}`)
+					loginUsers[0].reset();
 				}
 			})
 

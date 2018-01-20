@@ -16,7 +16,7 @@ class Users {
 
 	removeUser (id) {
 		// var users = this.users.filter((user) => user.id === id);
-		
+
 		// var userAr = users.map((user) => user.id);
 		// this.users.pull(userAr)
 		// return console.log(userAr)

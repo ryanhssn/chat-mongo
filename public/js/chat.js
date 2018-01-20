@@ -19,7 +19,7 @@ function scrollToBottom() {
 socket.on('connect', function() {
 	console.log('connected to server');
 	var userId = localStorage.getItem("userData");
-	console.log('userData',userId);
+	//console.log('userData',userId);
 	//var params = jQuery.deparam(window.location.search);
 
 	socket.emit('join', userId, function(err) {
@@ -52,31 +52,47 @@ socket.on('updateUserList', function(users) {
 })
 
 socket.on('loadConversation', function(message) {
-	console.log('conversation ',message)
+	//console.log('conversation ',message)
 	var formattedTime = moment(message.createdAt).format('h:mm a');
 	var chatScreen = jQuery('#message-template').html();
 	var html = "";
-	
-	message.forEach(function(text) {
+
+	message.texts.forEach(function(text) {
+
+		if(message.userId===text._creatorId){
+			var messageType = 'out-going';
+		} else {
+			var messageType = 'in-coming';
+		}
+
+
 		html += Mustache.render(chatScreen, {
 			text: text.text,
 			from: text._creatorName,
+			type: messageType,
 			createdAt: formattedTime
 		})
 	})
 
 	jQuery('#messages').append(html);
 
-	scrollToBottom();
+		$("#messages").animate({ scrollTop: $('#messages').prop("scrollHeight")}, 1000);
 })
 
 socket.on('newMessage', function(message) {
+	var userId = localStorage.getItem("userData");
+	if(userId===message.id){
+		var messageType = 'out-going';
+	} else {
+		var messageType = 'in-coming';
+	}
 	console.log('newMessage ',message)
 	var formattedTime = moment(message.createdAt).format('h:mm a');
 	var template = jQuery('#message-template').html();
 	var html = Mustache.render(template, {
 		text: message.text,
 		from: message.from,
+		type: messageType,
 		createdAt: formattedTime
 	});
 

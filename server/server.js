@@ -86,6 +86,10 @@ io.on('connection', (socket) => {
 
 
 		socket.on('join', (userId, callback) => {
+			//console.log('mongo id is', userId);
+			// if(!isRealString(params.name) || !isRealString(params.room)){
+			// 	return callback('name are room name are required');
+			// }
 
 			User.findOne({
 				_id:userId
@@ -103,10 +107,11 @@ io.on('connection', (socket) => {
 
 					/*load conversation*/
 					Text.find().then((texts) => {
-							socket.emit('loadConversation', texts);
+							//res.send({texts});
+							socket.emit('loadConversation', {userId, texts});
 						}, (e) => {
 							console.log('Error lodading conversation ', e)
-						})
+				})
 
 				})
 
@@ -115,7 +120,7 @@ io.on('connection', (socket) => {
 		});
 
 		socket.on('createMessage', (message, callback) => {
-			console.log(message);
+			//console.log(message);
 			var user = users.getUser(socket.id);
 
 			if (user && isRealString(message.text)) {
@@ -131,7 +136,7 @@ io.on('connection', (socket) => {
 
 					})
 
-				io.to(user.room).emit('newMessage', generateMessage(user.name, message.text))
+				io.to(user.room).emit('newMessage', generateMessage(user.name, message.text, message.creatorId))
 			}
 
 			callback();
