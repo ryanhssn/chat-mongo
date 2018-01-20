@@ -18,9 +18,11 @@ function scrollToBottom() {
 
 socket.on('connect', function() {
 	console.log('connected to server');
-	var params = jQuery.deparam(window.location.search);
+	var userId = localStorage.getItem("userData");
+	console.log('userData',userId);
+	//var params = jQuery.deparam(window.location.search);
 
-	socket.emit('join', params, function(err) {
+	socket.emit('join', userId, function(err) {
 		if(err) {
 			alert(err);
 			//window.location.href = "/";
@@ -53,16 +55,15 @@ socket.on('loadConversation', function(message) {
 	console.log('conversation ',message)
 	var formattedTime = moment(message.createdAt).format('h:mm a');
 	var chatScreen = jQuery('#message-template').html();
-	var html;
+	var html = "";
+	
 	message.forEach(function(text) {
 		html += Mustache.render(chatScreen, {
 			text: text.text,
-			from: 'Bilal Hussain',
+			from: text._creatorName,
 			createdAt: formattedTime
-		})	
+		})
 	})
-
-	
 
 	jQuery('#messages').append(html);
 
@@ -106,11 +107,14 @@ socket.on('newLocationMessage', function(message) {
 
 jQuery('#message-form').on('submit', function(e) {
 	e.preventDefault();
-
+	var userId = localStorage.getItem("userData");
+	var userName = localStorage.getItem("userName");
 	var messageTextBox = jQuery('[name=message]')
 
 	socket.emit('createMessage', {
-		text: messageTextBox.val()
+		text: messageTextBox.val(),
+		creatorId: userId,
+		creatorName: userName
 	}, function() {
 		messageTextBox.val('')
 	})

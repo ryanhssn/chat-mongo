@@ -51,7 +51,7 @@ app.get('/texts', (req, res) => {
 })
 
 app.post('/users', (req, res) => {
-	var body = _.pick(req.body, ['email', 'password']);
+	var body = _.pick(req.body, ['name', 'email', 'password']);
 	var user = new User(body);
 
 	user.save().then((user) => {
@@ -68,7 +68,7 @@ app.get('/users/me', authenticate, (req, res) => {
 })
 
 app.post('/users/login', (req, res) => {
-	var body = _.pick(req.body, ['email', 'password']);
+	var body = _.pick(req.body, ['name', 'email', 'password']);
 
 
 	User.findByCredentials(body.email, body.password).then((user) => {
@@ -83,55 +83,57 @@ app.post('/users/login', (req, res) => {
 app.use(express.static(publicPath));
 
 io.on('connection', (socket) => {
-	console.log('new user connected');
 
-	
 
-		socket.on('join', (params, callback) => {
-			if(!isRealString(params.name) || !isRealString(params.room)){
-				return callback('name are room name are required');
-			}
+		socket.on('join', (userId, callback) => {
 
-			socket.join(params.room)
-			users.removeUser(socket.id);
-			users.addUser(socket.id, params.name, params.room)
-			
+			User.findOne({
+				_id:userId
+			}).then((user) => {
 
-			io.to(params.room).emit('updateUserList', users.getUserList(params.room))
-			//socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
-			
-			/*load conversation*/
-			Text.find().then((texts) => {
-					//res.send({texts});
-					socket.emit('loadConversation', texts);
-				}, (e) => {
-					console.log('Error lodading conversation ', e)
+					console.log(`new user connected : ${user.name}`);
+
+					 socket.join('conversation')
+					 //users.removeUser(socket.id);
+					 users.addUser(socket.id, user.name, 'conversation')
+		      //
+		      //
+					// io.to(params.room).emit('updateUserList', users.getUserList(params.room))
+					socket.emit('newMessage', generateMessage('Admin', `Welcome to the chat app, ${user.name}`));
+
+					/*load conversation*/
+					Text.find().then((texts) => {
+							socket.emit('loadConversation', texts);
+						}, (e) => {
+							console.log('Error lodading conversation ', e)
+						})
+
 				})
-
-			
 
 			//socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined.`));
 			callback();
 		});
 
 		socket.on('createMessage', (message, callback) => {
-
+			console.log(message);
 			var user = users.getUser(socket.id);
-			
+
 			if (user && isRealString(message.text)) {
 
 				var text = new Text({
-						text: message.text
+						text: message.text,
+						_creatorId: message.creatorId,
+						_creatorName: message.creatorName
 					})
 					text.save().then((doc) => {
-						//console.log('saved ', doc)
+
 					}, (e) => {
-						//console.log('error ', e)
+
 					})
 
 				io.to(user.room).emit('newMessage', generateMessage(user.name, message.text))
 			}
-			
+
 			callback();
 		})
 

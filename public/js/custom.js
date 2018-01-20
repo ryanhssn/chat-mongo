@@ -1,5 +1,5 @@
 var postUsers = $('#post-users');
-var loginUsers = $('#login-users');		
+var loginUsers = $('#login-users');
 
 		var jsonData = function ( form ) {
 			var arrData = form.serializeArray(),
@@ -13,7 +13,7 @@ var loginUsers = $('#login-users');
 		};
 
 
-	
+
 		loginUsers.on('submit', function( e ) {
 			e.preventDefault();
 
@@ -24,13 +24,16 @@ var loginUsers = $('#login-users');
 				crossDomain: true,
 				contentType: 'application/json',
 				success: function(data){
+
+					localStorage.setItem('userData', data._id);
+					localStorage.setItem('userName', data.name)
 					window.location.href = "/chat.html"
 				},
 				error: function(err){
 					console.log(err)
 				}
 			})
-			
+
 		})
 
 		postUsers.on('submit', function( e ) {
@@ -46,6 +49,8 @@ var loginUsers = $('#login-users');
 					xhr.setRequestHeader( 'Authorization', 'Basic username: password');
 				},
 				success: function(data){
+					localStorage.setItem('userData', data._id);
+					localStorage.setItem('userName', data.name);
 					window.location.href = "/chat.html"
 				},
 				error: function(err){
@@ -54,5 +59,5 @@ var loginUsers = $('#login-users');
 					postUsers[0].reset();
 				}
 			})
-			
+
 		})

@@ -9,6 +9,14 @@ var Text = mongoose.model('Text', {
 	},
 	recievedAt: {
 		type: Number
+	},
+	_creatorId: {
+		type: mongoose.Schema.Types.ObjectId,
+		required: true
+	},
+	_creatorName: {
+		type: String,
+		required: true
 	}
 });
 
