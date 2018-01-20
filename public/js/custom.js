@@ -18,7 +18,7 @@ var loginUsers = $('#login-users');
 			e.preventDefault();
 
 			$.ajax({
-				url: 'http://localhost:3000/users/login',
+				url: 'https://chat-mongo-bh.herokuapp.com/users/login',
 				method: 'POST',
 				data: jsonData( loginUsers ),
 				crossDomain: true,
@@ -42,7 +42,7 @@ var loginUsers = $('#login-users');
 			e.preventDefault();
 			$('.error-post').text('')
 			$.ajax({
-				url: 'http://localhost:3000/users',
+				url: 'https://chat-mongo-bh.herokuapp.com/users',
 				method: 'POST',
 				data: jsonData( postUsers ),
 				crossDomain: true,
