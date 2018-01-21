@@ -223,4 +223,13 @@ li.message.in-coming {
   .chat__footer button {
     margin-right: 0px;
   }
+
+  .centered-form {
+    display: block;
+    align-items: center;
+    height: 100vh;
+    width: 0 !important;
+    justify-content: center;
+    margin-left: 25%
+  }
 }

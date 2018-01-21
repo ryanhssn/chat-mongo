@@ -163,6 +163,13 @@ io.on('connection', (socket) => {
 	});
 })
 
+app.delete('/users/me/token', authenticate, (req, res) => {
+	req.user.removeToken(req.token).then(() => {
+		res.staus(200).send();
+	}, () => {
+		res.staus(400).send();
+	})
+})
 
 server.listen(port, () => {
 	console.log(`Started on port ${port}`)
